@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS lessons (
   position INTEGER NOT NULL,
   section TEXT NOT NULL DEFAULT '',
   title_id TEXT NOT NULL, title_en TEXT NOT NULL,
-  kind TEXT NOT NULL DEFAULT 'text' CHECK (kind IN ('text','pdf','youtube')),
+  kind TEXT NOT NULL DEFAULT 'text' CHECK (kind IN ('text','pdf','youtube','slides')),
   body_id TEXT NOT NULL DEFAULT '', body_en TEXT NOT NULL DEFAULT '',
   url TEXT NOT NULL DEFAULT '',
   UNIQUE (course_id, position)
@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS enrollments (
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   completed_at TEXT,
   cert_code TEXT UNIQUE,
+  cert_name TEXT,
   PRIMARY KEY (user_id, course_id)
 );
 CREATE TABLE IF NOT EXISTS progress (

@@ -49,3 +49,75 @@ test('sanitasi konten', () => {
   assert.equal(safePdfUrl('/files/a.pdf'), '/files/a.pdf');
   assert.ok(!renderMarkdown('<script>alert(1)</script>hi').includes('<script'));
 });
+
+// ---- admin, sertifikat, slide ----
+import { hashPassword } from '../src/auth.js';
+
+async function login(app, email, password) {
+  const r = await app.inject({ method: 'POST', url: '/login', headers: H, payload: form({ email, password }) });
+  return { sid: r.cookies.find((c) => c.name === 'sid')?.value };
+}
+
+test('admin: hanya admin; buat kursus, pelajaran, urutan, validasi URL', async () => {
+  const app = await setup();
+  app.db.prepare("INSERT INTO users (email,name,password_hash,role) VALUES ('a@x.id','Admin',?, 'admin')").run(hashPassword('adminpass123'));
+  app.db.prepare("INSERT INTO users (email,name,password_hash) VALUES ('s@x.id','Siswa',?)").run(hashPassword('siswapass123'));
+  const stu = await login(app, 's@x.id', 'siswapass123');
+  assert.equal((await app.inject({ url: '/admin', cookies: stu })).statusCode, 403);
+  assert.equal((await app.inject({ url: '/admin' })).statusCode, 302);
+
+  const adm = await login(app, 'a@x.id', 'adminpass123');
+  const post = (url, o, h = H) => app.inject({ method: 'POST', url, headers: h, cookies: adm, payload: form(o) });
+  assert.equal((await app.inject({ url: '/admin', cookies: adm })).statusCode, 200);
+  assert.equal((await post('/admin/courses', { slug: 'k2', title_id: 'K2', title_en: 'C2' }, { ...H, origin: 'https://evil.example' })).statusCode, 403);
+  assert.equal((await post('/admin/courses', { slug: 'BAD SLUG', title_id: 'K', title_en: 'C' })).statusCode, 400);
+  const c = await post('/admin/courses', { slug: 'k2', title_id: 'K2', title_en: 'C2', published: '1' });
+  assert.equal(c.statusCode, 302);
+  const cid = Number(c.headers.location.split('/').pop());
+
+  const bad = await post(`/admin/courses/${cid}/lessons`, { title_id: 'V', title_en: 'V', kind: 'youtube', url: 'https://evil.com/x' });
+  assert.equal(bad.statusCode, 400);
+  for (const t of ['A', 'B', 'C'])
+    await post(`/admin/courses/${cid}/lessons`, { title_id: t, title_en: t, kind: 'youtube', url: 'https://youtu.be/dQw4w9WgXcQ' });
+  const order = () => app.db.prepare('SELECT title_id FROM lessons WHERE course_id=? ORDER BY position').all(cid).map((r) => r.title_id).join('');
+  assert.equal(order(), 'ABC');
+  const idB = app.db.prepare("SELECT id FROM lessons WHERE course_id=? AND title_id='B'").get(cid).id;
+  await post(`/admin/lessons/${idB}/move`, { dir: 'up' });
+  assert.equal(order(), 'BAC');
+  await post(`/admin/lessons/${idB}/delete`, {});
+  assert.equal(order(), 'AC');
+  assert.deepEqual(app.db.prepare('SELECT position FROM lessons WHERE course_id=? ORDER BY position').all(cid).map((r) => r.position), [1, 2]);
+});
+
+test('sertifikat: terbit saat selesai, halaman verifikasi dan PDF', async () => {
+  const app = await setup();
+  const r = await app.inject({ method: 'POST', url: '/register', headers: H, payload: form({ name: 'Siti Aminah', email: 'siti@x.id', password: 'katasandi123' }) });
+  const cookies = { sid: sid(r) };
+  const go = (m, u) => app.inject({ method: m, url: u, headers: H, cookies });
+  await go('POST', '/courses/c/enroll');
+  await go('POST', '/courses/c/lessons/1/complete');
+  assert.equal(app.db.prepare('SELECT cert_code FROM enrollments').get().cert_code, null, 'belum selesai semua');
+  await go('POST', '/courses/c/lessons/2/complete');
+  const { cert_code: code, cert_name } = app.db.prepare('SELECT cert_code, cert_name FROM enrollments').get();
+  assert.match(code, /^MRI-[A-Z2-9]{10}$/);
+  assert.equal(cert_name, 'Siti Aminah');
+  await go('POST', '/courses/c/lessons/2/complete');
+  assert.equal(app.db.prepare('SELECT cert_code FROM enrollments').get().cert_code, code, 'kode tidak berubah');
+
+  const v = await app.inject({ url: `/certificate/${code}` });
+  assert.equal(v.statusCode, 200);
+  assert.ok(v.body.includes('Siti Aminah'));
+  const pdf = await app.inject({ url: `/certificate/${code}/pdf` });
+  assert.equal(pdf.statusCode, 200);
+  assert.equal(pdf.headers['content-type'], 'application/pdf');
+  assert.equal(pdf.rawPayload.subarray(0, 4).toString(), '%PDF');
+  assert.equal((await app.inject({ url: '/certificate/MRI-TIDAKADA/pdf' })).statusCode, 404);
+});
+
+test('slide disajikan dengan sandbox', async () => {
+  const app = await setup();
+  const r = await app.inject({ url: '/slides/r/modul-01.html' });
+  assert.equal(r.statusCode, 200);
+  assert.match(r.headers['content-security-policy'], /^sandbox allow-scripts/);
+  assert.ok(!r.body.includes('<aside class="notes"'));
+});

@@ -1,0 +1,31 @@
+<p><a href="/admin">← Admin</a></p>
+<h1><%= course ? 'Ubah kursus' : 'Kursus baru' %></h1>
+<% if (error) { %><p class="err"><%= error %></p><% } %>
+<form method="post" action="<%= course ? '/admin/courses/' + course.id : '/admin/courses' %>" class="form wide">
+  <label>Slug (alamat URL)<input name="slug" required value="<%= form.slug || '' %>"></label>
+  <label>Judul (ID)<input name="title_id" required value="<%= form.title_id || '' %>"></label>
+  <label>Judul (EN, opsional: kosong = pakai ID)<input name="title_en" value="<%= form.title_en || '' %>"></label>
+  <label>Deskripsi (ID)<textarea name="desc_id" rows="3"><%= form.desc_id || '' %></textarea></label>
+  <label>Deskripsi (EN)<textarea name="desc_en" rows="3"><%= form.desc_en || '' %></textarea></label>
+  <label class="row"><input type="checkbox" name="published" value="1" <%= form.published ? 'checked' : '' %>> Tayang (terlihat publik)</label>
+  <button>Simpan</button>
+</form>
+<% if (course) { %>
+  <h2>Pelajaran</h2>
+  <p><a href="/admin/courses/<%= course.id %>/lessons/new">+ Pelajaran baru</a></p>
+  <ol class="lessons">
+  <% lessons.forEach(l => { %>
+    <li><% if (l.section) { %><small><%= l.section %></small><br><% } %>
+      <a href="/admin/lessons/<%= l.id %>"><%= l.title_id %></a> <small>[<%= l.kind %>]</small>
+      <form method="post" action="/admin/lessons/<%= l.id %>/move" class="inline"><input type="hidden" name="dir" value="up"><button class="link" title="Naik">▲</button></form>
+      <form method="post" action="/admin/lessons/<%= l.id %>/move" class="inline"><input type="hidden" name="dir" value="down"><button class="link" title="Turun">▼</button></form>
+    </li>
+  <% }) %>
+  </ol>
+  <h2>Hapus kursus</h2>
+  <form method="post" action="/admin/courses/<%= course.id %>/delete" class="form">
+    <label>Ketik slug <code><%= course.slug %></code> untuk menghapus kursus beserta pelajaran dan progres:
+      <input name="confirm" autocomplete="off"></label>
+    <button class="danger">Hapus kursus</button>
+  </form>
+<% } %>

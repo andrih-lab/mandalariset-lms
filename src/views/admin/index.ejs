@@ -1,0 +1,9 @@
+<h1>Admin</h1>
+<p><a href="/admin/courses/new">+ Kursus baru</a> · <a href="/admin/students">Peserta</a></p>
+<% courses.forEach(c => { %>
+  <article class="card">
+    <h2><a href="/admin/courses/<%= c.id %>"><%= c.title_id %></a> <small><%= c.published ? '' : '(draf)' %></small></h2>
+    <p><%= c.lessons %> pelajaran · <%= c.students %> peserta · <%= c.finished %> selesai · <a href="/courses/<%= c.slug %>">lihat</a></p>
+  </article>
+<% }) %>
+<% if (!courses.length) { %><p>Belum ada kursus.</p><% } %>

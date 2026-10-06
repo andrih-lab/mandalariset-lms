@@ -1,0 +1,19 @@
+<p><a href="/admin">← Admin</a></p>
+<h1>Peserta</h1>
+<% if (flash) { %><p><strong><%= flash %></strong></p><% } %>
+<h2>Daftarkan manual</h2>
+<form method="post" action="/admin/enroll" class="form">
+  <label>Email peserta<input type="email" name="email" required></label>
+  <label>Kursus<select name="course_id"><% courses.forEach(c => { %><option value="<%= c.id %>"><%= c.title_id %></option><% }) %></select></label>
+  <button>Daftarkan</button>
+</form>
+<h2>Daftar akun (<%= users.length %>)</h2>
+<% users.forEach(u => { %>
+  <article class="card">
+    <p><strong><%= u.name %></strong> · <%= u.email %> <small><%= u.role === 'admin' ? '[admin]' : '' %></small></p>
+    <% (byUser.get(u.id) || []).forEach(e => { %>
+      <p><small><%= e.title_id %>: <%= e.done %>/<%= e.total %>
+        <% if (e.cert_code) { %> · <a href="/certificate/<%= e.cert_code %>"><%= e.cert_code %></a><% } %></small></p>
+    <% }) %>
+  </article>
+<% }) %>

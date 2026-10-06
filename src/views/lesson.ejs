@@ -1,8 +1,13 @@
 <p><a href="/courses/<%= course.slug %>">← <%= title(course, lang) %></a></p>
 <h1><%= title(lesson, lang) %></h1>
-<% if (lesson.kind === 'text') { %><div class="prose"><%- html %></div><% } %>
+
 <% if (embed) { %><div class="video"><iframe src="<%= embed %>" allowfullscreen loading="lazy"></iframe></div><% } %>
+<% if (slides) { %>
+  <div class="slides"><iframe src="<%= slides %>" sandbox="allow-scripts allow-popups allow-downloads" allowfullscreen loading="lazy"></iframe></div>
+  <p><a href="<%= slides %>" target="_blank" rel="noopener"><%= lang === 'id' ? 'Buka slide layar penuh' : 'Open slides full screen' %> ↗</a></p>
+<% } %>
 <% if (pdf) { %><p><a href="<%= pdf %>" target="_blank" rel="noopener">PDF</a></p><% } %>
+<% if (html) { %><div class="prose"><%- html %></div><% } %>
 <% if (!done) { %>
   <form method="post" action="/courses/<%= course.slug %>/lessons/<%= lesson.position %>/complete"><button><%= t('complete') %></button></form>
 <% } else { %><p>✓ <%= t('done') %></p><% } %>

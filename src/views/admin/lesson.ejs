@@ -1,0 +1,25 @@
+<p><a href="/admin/courses/<%= course.id %>">← <%= course.title_id %></a></p>
+<h1><%= lesson ? 'Ubah pelajaran' : 'Pelajaran baru' %></h1>
+<% if (error) { %><p class="err"><%= error %></p><% } %>
+<form method="post" action="<%= lesson ? '/admin/lessons/' + lesson.id : '/admin/courses/' + course.id + '/lessons' %>" class="form wide">
+  <label>Bagian / minggu (opsional)<input name="section" value="<%= form.section || '' %>"></label>
+  <label>Judul (ID)<input name="title_id" required value="<%= form.title_id || '' %>"></label>
+  <label>Judul (EN, opsional: kosong = pakai ID)<input name="title_en" value="<%= form.title_en || '' %>"></label>
+  <label>Jenis
+    <select name="kind">
+      <% [['youtube','Video YouTube'],['text','Teks (Markdown)'],['slides','Slide (/slides/...)'],['pdf','PDF']].forEach(k => { %>
+        <option value="<%= k[0] %>" <%= form.kind === k[0] ? 'selected' : '' %>><%= k[1] %></option>
+      <% }) %>
+    </select></label>
+  <label>URL (YouTube: tempel tautan video; Slide: /slides/r/modul-01.html; PDF: https://… atau /files/x.pdf)
+    <input name="url" value="<%= form.url || '' %>"></label>
+  <label>Teks / keterangan (ID, Markdown)<textarea name="body_id" rows="10"><%= form.body_id || '' %></textarea></label>
+  <label>Teks / keterangan (EN, Markdown)<textarea name="body_en" rows="10"><%= form.body_en || '' %></textarea></label>
+  <button>Simpan</button>
+</form>
+<% if (lesson) { %>
+  <form method="post" action="/admin/lessons/<%= lesson.id %>/delete" class="form">
+    <label class="row"><input type="checkbox" required> Saya yakin menghapus pelajaran ini (progres peserta ikut terhapus)</label>
+    <button class="danger">Hapus pelajaran</button>
+  </form>
+<% } %>

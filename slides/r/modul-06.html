@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="id"><head>
+<script src="libs/clipboard/clipboard.min.js"></script>
+<script src="libs/quarto-html/tabby.min.js"></script>
+<script src="libs/quarto-html/popper.min.js"></script>
+<script src="libs/quarto-html/tippy.umd.min.js"></script>
+<link href="libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="libs/quarto-html/quarto-syntax-highlighting-234273d1456647dabc34a594ac50e507.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.7.32">
+
+  <meta name="author" content="Andri Hendrizal">
+  <title>Modul 6. Jalur bidang</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #24292e;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #24292e; } /* Normal */
+    code span.al { color: #ff5555; font-weight: bold; } /* Alert */
+    code span.an { color: #6a737d; } /* Annotation */
+    code span.at { color: #d73a49; } /* Attribute */
+    code span.bn { color: #005cc5; } /* BaseN */
+    code span.bu { color: #d73a49; } /* BuiltIn */
+    code span.cf { color: #d73a49; } /* ControlFlow */
+    code span.ch { color: #032f62; } /* Char */
+    code span.cn { color: #005cc5; } /* Constant */
+    code span.co { color: #6a737d; } /* Comment */
+    code span.cv { color: #6a737d; } /* CommentVar */
+    code span.do { color: #6a737d; } /* Documentation */
+    code span.dt { color: #d73a49; } /* DataType */
+    code span.dv { color: #005cc5; } /* DecVal */
+    code span.er { color: #ff5555; text-decoration: underline; } /* Error */
+    code span.ex { color: #d73a49; font-weight: bold; } /* Extension */
+    code span.fl { color: #005cc5; } /* Float */
+    code span.fu { color: #6f42c1; } /* Function */
+    code span.im { color: #032f62; } /* Import */
+    code span.in { color: #6a737d; } /* Information */
+    code span.kw { color: #d73a49; } /* Keyword */
+    code span.op { color: #24292e; } /* Operator */
+    code span.ot { color: #6f42c1; } /* Other */
+    code span.pp { color: #d73a49; } /* Preprocessor */
+    code span.re { color: #6a737d; } /* RegionMarker */
+    code span.sc { color: #005cc5; } /* SpecialChar */
+    code span.ss { color: #032f62; } /* SpecialString */
+    code span.st { color: #032f62; } /* String */
+    code span.va { color: #e36209; } /* Variable */
+    code span.vs { color: #032f62; } /* VerbatimString */
+    code span.wa { color: #ff5555; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="libs/revealjs/dist/theme/quarto-14cbaf22881c94bda5b9b18fbed933b9.css">
+  <link href="libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section class="quarto-title-block center">
+  <h1 class="title">Modul 6. Jalur bidang</h1>
+  <p class="subtitle">Minggu 7 · Video pembuka + lima video per jalur</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Andri Hendrizal 
+</div>
+        <p class="quarto-title-affiliation">
+            Kursus Daring R untuk Peneliti di Era AI
+          </p>
+    </div>
+</div>
+
+</section>
+<section>
+<section class="title-slide slide level1 center" data-background-color="#0f4c45">
+<h1>Video 6.0<br>Memilih jalur</h1>
+
+</section>
+<section class="slide level2">
+<h2>Empat jalur</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Jika data Anda berupa</th>
+<th>Pilih</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Tabel spesies per plot atau sampel</td>
+<td><strong>A. Ekologi komunitas</strong></td>
+</tr>
+<tr class="even">
+<td>Koordinat, batas wilayah, citra</td>
+<td><strong>B. Spasial</strong></td>
+</tr>
+<tr class="odd">
+<td>Jawaban kuesioner, skala Likert</td>
+<td><strong>C. Kuesioner dan sosial</strong></td>
+</tr>
+<tr class="even">
+<td>Ekspor Scopus / Web of Science</td>
+<td><strong>D. Bibliometrik</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Polanya tetap: pahami metode → tulis atau minta kode → <strong>periksa syarat metode</strong> → tafsirkan hati-hati.</p>
+
+</section></section>
+<section>
+<section class="title-slide slide level1 center" data-background-color="#1f7a6d">
+<h1>Jalur A<br>Ekologi komunitas</h1>
+<p>vegan: keanekaragaman, akumulasi spesies, NMDS, PERMANOVA</p>
+
+</section>
+<section class="slide level2">
+<h2>6A.1 Dari data lapangan ke matriks komunitas</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb1-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vegan)</span>
+<span id="cb1-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="" aria-hidden="true" tabindex="-1"></a>komunitas <span class="ot">&lt;-</span> veg <span class="sc">|&gt;</span></span>
+<span id="cb1-6"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(plot, spesies) <span class="sc">|&gt;</span></span>
+<span id="cb1-7"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> spesies, <span class="at">values_from =</span> n, <span class="at">values_fill =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-8"><a href="" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">column_to_rownames</span>(<span class="st">"plot"</span>)</span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Periksa nama spesies dengan <code>distinct()</code> dulu: satu salah ketik = satu “spesies baru”.</p>
+
+</section>
+<section class="slide level2">
+<h2>6A.2 Keanekaragaman dan kurva akumulasi</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(dune); <span class="fu">data</span>(dune.env)</span>
+<span id="cb2-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="" aria-hidden="true" tabindex="-1"></a>H <span class="ot">&lt;-</span> <span class="fu">diversity</span>(dune, <span class="at">index =</span> <span class="st">"shannon"</span>)</span>
+<span id="cb2-4"><a href="" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> <span class="fu">specnumber</span>(dune)</span>
+<span id="cb2-5"><a href="" aria-hidden="true" tabindex="-1"></a>J <span class="ot">&lt;-</span> H <span class="sc">/</span> <span class="fu">log</span>(S)                                   <span class="co"># kemerataan Pielou</span></span>
+<span id="cb2-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="" aria-hidden="true" tabindex="-1"></a>sac <span class="ot">&lt;-</span> <span class="fu">specaccum</span>(dune, <span class="at">method =</span> <span class="st">"random"</span>, <span class="at">permutations =</span> <span class="dv">100</span>)</span>
+<span id="cb2-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(sac, <span class="at">ci.type =</span> <span class="st">"poly"</span>, <span class="at">ci.col =</span> <span class="st">"grey85"</span>, <span class="at">ci.lty =</span> <span class="dv">0</span>)</span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Kurva masih naik di ujung → masih ada spesies yang belum tercatat.</p>
+
+</section>
+<section class="slide level2">
+<h2>6A.3 NMDS dan nilai stress</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb3-2"><a href="" aria-hidden="true" tabindex="-1"></a>nmds <span class="ot">&lt;-</span> <span class="fu">metaMDS</span>(dune, <span class="at">distance =</span> <span class="st">"bray"</span>, <span class="at">k =</span> <span class="dv">2</span>, <span class="at">trymax =</span> <span class="dv">100</span>)</span>
+<span id="cb3-3"><a href="" aria-hidden="true" tabindex="-1"></a>nmds<span class="sc">$</span>stress</span>
+<span id="cb3-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">stressplot</span>(nmds)</span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Stress</th>
+<th>Tafsiran</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>&lt; 0,1</td>
+<td>Baik</td>
+</tr>
+<tr class="even">
+<td>0,1–0,2</td>
+<td>Tafsirkan dengan hati-hati</td>
+</tr>
+<tr class="odd">
+<td>&gt; 0,2</td>
+<td>Sebaiknya tidak ditafsirkan</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section class="slide level2">
+<h2>6A.4 PERMANOVA dan uji dispersi</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb4-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">adonis2</span>(dune <span class="sc">~</span> Management, <span class="at">data =</span> dune.env, <span class="at">permutations =</span> <span class="dv">999</span>, <span class="at">method =</span> <span class="st">"bray"</span>)</span>
+<span id="cb4-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="" aria-hidden="true" tabindex="-1"></a>bd <span class="ot">&lt;-</span> <span class="fu">betadisper</span>(<span class="fu">vegdist</span>(dune, <span class="at">method =</span> <span class="st">"bray"</span>), dune.env<span class="sc">$</span>Management)</span>
+<span id="cb4-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">permutest</span>(bd, <span class="at">permutations =</span> <span class="dv">999</span>)</span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>PERMANOVA</th>
+<th>betadisper</th>
+<th>Kesimpulan</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Nyata</td>
+<td>Tidak nyata</td>
+<td>Komposisi berbeda</td>
+</tr>
+<tr class="even">
+<td>Nyata</td>
+<td>Nyata</td>
+<td>Bisa karena sebaran berbeda: laporkan keduanya</td>
+</tr>
+</tbody>
+</table>
+
+</section>
+<section class="slide level2">
+<h2>6A.5 Grafik ordinasi</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb5-2"><a href="" aria-hidden="true" tabindex="-1"></a>sc <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">scores</span>(nmds, <span class="at">display =</span> <span class="st">"sites"</span>))</span>
+<span id="cb5-3"><a href="" aria-hidden="true" tabindex="-1"></a>sc<span class="sc">$</span>Management <span class="ot">&lt;-</span> dune.env<span class="sc">$</span>Management</span>
+<span id="cb5-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sc, <span class="fu">aes</span>(NMDS1, NMDS2, <span class="at">colour =</span> Management)) <span class="sc">+</span></span>
+<span id="cb5-6"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_ellipse</span>(<span class="at">level =</span> <span class="fl">0.95</span>) <span class="sc">+</span></span>
+<span id="cb5-8"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span>                       <span class="co"># kedua sumbu berskala sama</span></span>
+<span id="cb5-9"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_family =</span> <span class="st">"Arial"</span>)</span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Tugas jalur A: matriks komunitas, indeks, NMDS + stress, PERMANOVA + betadisper.</p>
+
+</section></section>
+<section>
+<section class="title-slide slide level1 center" data-background-color="#2f5d8a">
+<h1>Jalur B<br>Spasial</h1>
+<p>sf untuk vektor, terra untuk raster</p>
+
+</section>
+<section class="slide level2">
+<h2>6B.1 Vektor, raster, sistem koordinat</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Jenis</th>
+<th>Contoh</th>
+<th>Paket</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Vektor</td>
+<td>Titik plot, garis pantai, batas desa</td>
+<td><strong>sf</strong></td>
+</tr>
+<tr class="even">
+<td>Raster</td>
+<td>Citra satelit, NDVI, ketinggian</td>
+<td><strong>terra</strong></td>
+</tr>
+</tbody>
+</table>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Sistem</th>
+<th>Satuan</th>
+<th>Contoh</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>WGS84 (EPSG 4326)</td>
+<td>Derajat</td>
+<td>Koordinat GPS</td>
+</tr>
+<tr class="even">
+<td>UTM 47N (32647) / 48N (32648)</td>
+<td>Meter</td>
+<td>Jarak, luas, buffer</td>
+</tr>
+</tbody>
+</table>
+<p>sf dan terra: biner CRAN di Mac dan Windows, tanpa GDAL terpisah.</p>
+
+</section>
+<section class="slide level2">
+<h2>6B.2 Titik plot dari koordinat GPS</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf); <span class="fu">library</span>(readr); <span class="fu">library</span>(ggplot2); <span class="fu">library</span>(here)</span>
+<span id="cb6-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="" aria-hidden="true" tabindex="-1"></a>plot_pt <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data-raw"</span>, <span class="st">"plot.csv"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"lon"</span>, <span class="st">"lat"</span>), <span class="at">crs =</span> <span class="dv">4326</span>)   <span class="co"># bujur dulu, lalu lintang</span></span>
+<span id="cb6-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span> <span class="fu">geom_sf</span>(<span class="at">data =</span> plot_pt)                 <span class="co"># petakan segera</span></span>
+<span id="cb6-7"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="" aria-hidden="true" tabindex="-1"></a>batas <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">here</span>(<span class="st">"data-raw"</span>, <span class="st">"batas_desa.gpkg"</span>))</span>
+<span id="cb6-9"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">st_crs</span>(batas)</span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Zip dari Mac berisi <code>__MACOSX</code> dan <code>.DS_Store</code>? Pengguna Windows abaikan saja. Untuk berbagi, pakai <strong>GeoPackage</strong> (satu file).</p>
+
+</section>
+<section class="slide level2">
+<h2>6B.3 Transformasi, buffer, jarak</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="" aria-hidden="true" tabindex="-1"></a>batas_utm <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(batas, <span class="dv">32647</span>)     <span class="co"># sesuaikan zona UTM</span></span>
+<span id="cb7-2"><a href="" aria-hidden="true" tabindex="-1"></a>plot_utm  <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(plot_pt, <span class="dv">32647</span>)</span>
+<span id="cb7-3"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="" aria-hidden="true" tabindex="-1"></a>buffer_100 <span class="ot">&lt;-</span> <span class="fu">st_buffer</span>(plot_utm, <span class="at">dist =</span> <span class="dv">100</span>)   <span class="co"># 100 meter</span></span>
+<span id="cb7-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">st_distance</span>(plot_utm, garis_pantai_utm)          <span class="co"># jarak ke garis pantai</span></span>
+<span id="cb7-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">st_area</span>(batas_utm)</span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="awas">
+<p>Buffer pada data berderajat (EPSG 4326) tidak dalam meter. Ubah ke UTM dulu.</p>
+</div>
+
+</section>
+<section class="slide level2">
+<h2>6B.4 Raster dan ekstraksi nilai</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb8-2"><a href="" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="fu">here</span>(<span class="st">"data-raw"</span>, <span class="st">"ndvi.tif"</span>))</span>
+<span id="cb8-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">crs</span>(r, <span class="at">describe =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-4"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="" aria-hidden="true" tabindex="-1"></a>titik_r <span class="ot">&lt;-</span> <span class="fu">project</span>(<span class="fu">vect</span>(plot_pt), <span class="fu">crs</span>(r))   <span class="co"># samakan sistem koordinat</span></span>
+<span id="cb8-6"><a href="" aria-hidden="true" tabindex="-1"></a>nilai   <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">extract</span>(r, titik_r)</span>
+<span id="cb8-7"><a href="" aria-hidden="true" tabindex="-1"></a>plot_pt<span class="sc">$</span>ndvi <span class="ot">&lt;-</span> nilai[, <span class="dv">2</span>]</span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Semua hasil <code>NA</code>? Periksa sistem koordinat dan urutan bujur–lintang.</p>
+
+</section>
+<section class="slide level2">
+<h2>6B.5 Peta publikasi</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb9-2"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> batas_utm, <span class="at">fill =</span> <span class="st">"grey95"</span>) <span class="sc">+</span></span>
+<span id="cb9-3"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> plot_utm, <span class="fu">aes</span>(<span class="at">colour =</span> zona), <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_family =</span> <span class="st">"Arial"</span>)</span>
+<span id="cb9-5"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">st_write</span>(plot_utm, <span class="fu">here</span>(<span class="st">"output"</span>, <span class="st">"plot_utm.gpkg"</span>), <span class="at">delete_dsn =</span> <span class="cn">TRUE</span>)</span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Skala dan arah utara: paket <strong>ggspatial</strong>. Sunting manual: <strong>QGIS</strong> (Mac dan Windows).</p>
+<p>Tugas jalur B: titik plot, satu operasi vektor, ekstraksi raster, satu peta publikasi.</p>
+
+</section></section>
+<section>
+<section class="title-slide slide level1 center" data-background-color="#b86b00">
+<h1>Jalur C<br>Kuesioner dan sosial</h1>
+<p>psych dan lavaan</p>
+
+</section>
+<section class="slide level2">
+<h2>6C.1 Anonimisasi dan pemeriksaan</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="" aria-hidden="true" tabindex="-1"></a>kues <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">"data-raw"</span>, <span class="st">"kuesioner.csv"</span>)) <span class="sc">|&gt;</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>()</span>
+<span id="cb10-2"><a href="" aria-hidden="true" tabindex="-1"></a>kues <span class="ot">&lt;-</span> kues <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>nama, <span class="sc">-</span>no_hp)       <span class="co"># sebelum analisis dan sebelum ke AI</span></span>
+<span id="cb10-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(kues)</span>
+<span id="cb10-4"><a href="" aria-hidden="true" tabindex="-1"></a>kues <span class="sc">|&gt;</span> <span class="fu">count</span>(q1)                           <span class="co"># nilai di luar skala 1–5?</span></span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>CSV UTF-8 dari Google Forms/KoboToolbox terbaca benar oleh <code>read_csv()</code> di kedua sistem. Huruf rusak saat dibuka di Excel <strong>Windows</strong> = masalah tampilan Excel.</p>
+
+</section>
+<section class="slide level2">
+<h2>6C.2 Grafik Likert</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr); <span class="fu">library</span>(ggplot2)</span>
+<span id="cb11-2"><a href="" aria-hidden="true" tabindex="-1"></a>kues <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(q1<span class="sc">:</span>q8, <span class="at">names_to =</span> <span class="st">"butir"</span>, <span class="at">values_to =</span> <span class="st">"skor"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-4"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> butir, <span class="at">fill =</span> <span class="fu">factor</span>(skor))) <span class="sc">+</span></span>
+<span id="cb11-5"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb11-6"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Proporsi"</span>, <span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">fill =</span> <span class="st">"Skor"</span>) <span class="sc">+</span></span>
+<span id="cb11-7"><a href="" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_family =</span> <span class="st">"Arial"</span>)</span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+</section>
+<section class="slide level2">
+<h2>6C.3 Butir negatif dan reliabilitas</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="" aria-hidden="true" tabindex="-1"></a>kues <span class="ot">&lt;-</span> kues <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(q3, q7), \(x) <span class="dv">6</span> <span class="sc">-</span> x))   <span class="co"># skala 1–5</span></span>
+<span id="cb12-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(psych)</span>
+<span id="cb12-4"><a href="" aria-hidden="true" tabindex="-1"></a>psych<span class="sc">::</span><span class="fu">alpha</span>(<span class="fu">select</span>(kues, q1<span class="sc">:</span>q4))    <span class="co"># per dimensi, bukan seluruh kuesioner</span></span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="awas">
+<p>Alpha rendah + peringatan korelasi negatif = butir negatif belum dibalik.</p>
+</div>
+
+</section>
+<section class="slide level2">
+<h2>6C.4 Analisis faktor eksploratori</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">fa.parallel</span>(<span class="fu">select</span>(kues, q1<span class="sc">:</span>q8), <span class="at">fa =</span> <span class="st">"fa"</span>)                 <span class="co"># saran jumlah faktor</span></span>
+<span id="cb13-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">fa</span>(<span class="fu">select</span>(kues, q1<span class="sc">:</span>q8), <span class="at">nfactors =</span> <span class="dv">2</span>, <span class="at">rotate =</span> <span class="st">"oblimin"</span>,   <span class="co"># perlu GPArotation</span></span>
+<span id="cb13-3"><a href="" aria-hidden="true" tabindex="-1"></a>   <span class="at">fm =</span> <span class="st">"minres"</span>)</span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Setiap butir sebaiknya bermuatan tinggi pada <strong>satu</strong> faktor. Muatan rendah di semua faktor, atau tinggi di dua faktor → tinjau ulang butir.</p>
+
+</section>
+<section class="slide level2">
+<h2>6C.5 Pengantar CFA dengan lavaan</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lavaan)</span>
+<span id="cb14-2"><a href="" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="st">'</span></span>
+<span id="cb14-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="st">  pengetahuan =~ q1 + q2 + q3 + q4</span></span>
+<span id="cb14-4"><a href="" aria-hidden="true" tabindex="-1"></a><span class="st">  sikap       =~ q5 + q6 + q7 + q8</span></span>
+<span id="cb14-5"><a href="" aria-hidden="true" tabindex="-1"></a><span class="st">'</span></span>
+<span id="cb14-6"><a href="" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">cfa</span>(model, <span class="at">data =</span> kues, <span class="at">ordered =</span> <span class="cn">TRUE</span>)   <span class="co"># Likert = data berurutan</span></span>
+<span id="cb14-7"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit, <span class="at">fit.measures =</span> <span class="cn">TRUE</span>, <span class="at">standardized =</span> <span class="cn">TRUE</span>)</span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Baca CFI, TLI, RMSEA, dan muatan terstandar. Sebutkan sumber nilai ambang di naskah.</p>
+<p>Tugas jalur C: data teranonimkan, grafik Likert, reliabilitas per dimensi, analisis faktor.</p>
+
+</section></section>
+<section>
+<section class="title-slide slide level1 center" data-background-color="#5b6166">
+<h1>Jalur D<br>Bibliometrik</h1>
+<p>bibliometrix</p>
+
+</section>
+<section class="slide level2">
+<h2>6D.1 Ekspor dari Scopus dan Web of Science</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Basis data</th>
+<th>Format ekspor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Scopus</td>
+<td>CSV, semua informasi (abstrak, kata kunci, referensi)</td>
+</tr>
+<tr class="even">
+<td>Web of Science</td>
+<td>Plain text, <strong>Full Record and Cited References</strong>; hasil besar dalam beberapa file</td>
+</tr>
+</tbody>
+</table>
+<p>Simpan string pencarian dan tanggal pencarian.</p>
+<div class="columns">
+<div class="column mac" style="width:48%;">
+<p><span class="label-mac">Mac</span> <code>~/Downloads</code> → pindahkan ke <code>data-raw/</code></p>
+</div><div class="column" style="width:4%;">
+
+</div><div class="column win" style="width:48%;">
+<p><span class="label-win">Windows</span> <code>C:/Users/nama/Downloads</code> → pindahkan ke <code>data-raw/</code></p>
+</div></div>
+
+</section>
+<section class="slide level2">
+<h2>6D.2 Mengimpor dan menggabungkan</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bibliometrix); <span class="fu">library</span>(here)</span>
+<span id="cb15-2"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="" aria-hidden="true" tabindex="-1"></a>M_scopus <span class="ot">&lt;-</span> <span class="fu">convert2df</span>(<span class="fu">here</span>(<span class="st">"data-raw"</span>, <span class="st">"scopus.csv"</span>), <span class="at">dbsource =</span> <span class="st">"scopus"</span>, <span class="at">format =</span> <span class="st">"csv"</span>)</span>
+<span id="cb15-4"><a href="" aria-hidden="true" tabindex="-1"></a>M_wos    <span class="ot">&lt;-</span> <span class="fu">convert2df</span>(<span class="fu">c</span>(<span class="fu">here</span>(<span class="st">"data-raw"</span>, <span class="st">"wos_1.txt"</span>), <span class="fu">here</span>(<span class="st">"data-raw"</span>, <span class="st">"wos_2.txt"</span>)),</span>
+<span id="cb15-5"><a href="" aria-hidden="true" tabindex="-1"></a>                       <span class="at">dbsource =</span> <span class="st">"wos"</span>, <span class="at">format =</span> <span class="st">"plaintext"</span>)</span>
+<span id="cb15-6"><a href="" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">mergeDbSources</span>(M_scopus, M_wos, <span class="at">remove.duplicated =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-8"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(M_scopus); <span class="fu">nrow</span>(M_wos); <span class="fu">nrow</span>(M)   <span class="co"># untuk PRISMA / bagian metode</span></span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+</section>
+<section class="slide level2">
+<h2>6D.3 Analisis deskriptif</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="" aria-hidden="true" tabindex="-1"></a>hasil <span class="ot">&lt;-</span> <span class="fu">biblioAnalysis</span>(M, <span class="at">sep =</span> <span class="st">";"</span>)</span>
+<span id="cb16-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(hasil, <span class="at">k =</span> <span class="dv">10</span>, <span class="at">pause =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb16-3"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hasil, <span class="at">k =</span> <span class="dv">10</span>, <span class="at">pause =</span> <span class="cn">FALSE</span>)</span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="awas">
+<p>Tahun berjalan selalu tampak turun karena data belum lengkap. Tandai atau keluarkan dari grafik tren.</p>
+</div>
+
+</section>
+<section class="slide level2">
+<h2>6D.4 Jaringan kata kunci</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="" aria-hidden="true" tabindex="-1"></a>net <span class="ot">&lt;-</span> <span class="fu">biblioNetwork</span>(M, <span class="at">analysis =</span> <span class="st">"co-occurrences"</span>, <span class="at">network =</span> <span class="st">"keywords"</span>, <span class="at">sep =</span> <span class="st">";"</span>)</span>
+<span id="cb17-2"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">networkPlot</span>(net, <span class="at">n =</span> <span class="dv">30</span>, <span class="at">type =</span> <span class="st">"fruchterman"</span>,</span>
+<span id="cb17-3"><a href="" aria-hidden="true" tabindex="-1"></a>            <span class="at">Title =</span> <span class="st">"Ko-okurensi kata kunci"</span>, <span class="at">size =</span> <span class="cn">TRUE</span>, <span class="at">labelsize =</span> <span class="fl">0.7</span>)</span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="awas">
+<p>“mangrove” dan “mangroves” jadi dua simpul? Satukan bentuk jamak, singkatan, dan sinonim sebelum analisis.</p>
+</div>
+
+</section>
+<section class="slide level2">
+<h2>6D.5 biblioshiny dan pelaporan</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="fu">biblioshiny</span>()   <span class="co"># terbuka di browser bawaan</span></span></code><button title="Salin ke Papan Klip" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Bagus untuk <strong>eksplorasi</strong> cepat</li>
+<li>Hasil akhir untuk naskah dibuat dari <strong>skrip</strong>: klik di biblioshiny tidak tercatat</li>
+</ul>
+<p>Tugas jalur D: data gabungan + jumlah duplikat, analisis deskriptif, jaringan kata kunci setelah sinonim disatukan.</p>
+
+</section></section>
+<section>
+<section class="title-slide slide level1 center" data-background-color="#0f4c45">
+<h1>Penutup Modul 6</h1>
+
+</section>
+<section class="slide level2">
+<h2>Setiap metode punya syarat</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Jalur</th>
+<th>Syarat yang sering terlewat</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A. Komunitas</td>
+<td>Stress NMDS, betadisper</td>
+</tr>
+<tr class="even">
+<td>B. Spasial</td>
+<td>Sistem koordinat, urutan bujur–lintang</td>
+</tr>
+<tr class="odd">
+<td>C. Kuesioner</td>
+<td>Butir negatif, anonimisasi</td>
+</tr>
+<tr class="even">
+<td>D. Bibliometrik</td>
+<td>Duplikat, sinonim, tahun berjalan</td>
+</tr>
+</tbody>
+</table>
+<p>AI menulis kode dengan cepat. Memeriksa syarat adalah tugas Anda.</p>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p>R untuk Peneliti di Era AI</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="libs/revealjs/plugin/search/search.js"></script>
+  <script src="libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true,"numbers":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 720,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 6.0e-2,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Disalin!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Disalin!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+            const codeEl = trigger.previousElementSibling.cloneNode(true);
+            for (const childEl of codeEl.children) {
+              if (isCodeAnnotation(childEl)) {
+                childEl.remove();
+              }
+            }
+            return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+                // target, if specified
+                link.setAttribute("target", "_blank");
+                if (link.getAttribute("rel") === null) {
+                  link.setAttribute("rel", "noopener");
+                }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

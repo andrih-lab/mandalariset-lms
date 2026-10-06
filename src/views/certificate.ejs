@@ -1,0 +1,13 @@
+<% if (!cert) { %>
+  <h1><%= lang === 'id' ? 'Sertifikat tidak valid' : 'Certificate not valid' %></h1>
+  <p><%= lang === 'id' ? 'Kode tidak ditemukan.' : 'Code not found.' %></p>
+<% } else { %>
+  <h1>✓ <%= lang === 'id' ? 'Sertifikat valid' : 'Valid certificate' %></h1>
+  <div class="card">
+    <p><strong><%= cert.cert_name %></strong></p>
+    <p><%= lang === 'id' ? 'menyelesaikan kursus' : 'completed the course' %>
+       <strong><%= (lang === 'en' && cert.title_en) || cert.title_id %></strong></p>
+    <p><%= fmtDate(cert.completed_at, lang) %> · <code><%= cert.cert_code %></code></p>
+  </div>
+  <p><a href="/certificate/<%= cert.cert_code %>/pdf">PDF</a></p>
+<% } %>

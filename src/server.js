@@ -11,7 +11,9 @@ import { config } from './config.js';
 import { openDb } from './db.js';
 import { pickLang, makeT } from './i18n.js';
 import { hashPassword, verifyPassword, createSession, userFromToken, destroySession, cookieOpts } from './auth.js';
-import { renderMarkdown, youtubeEmbed, safePdfUrl } from './content.js';
+import { renderMarkdown, youtubeEmbed, safePdfUrl, safeSlidesUrl } from './content.js';
+import { issueCertificate, registerCertificates } from './certificate.js';
+import { registerAdmin } from './admin.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -24,14 +26,23 @@ export async function build({ db = openDb(), logger = false } = {}) {
   await app.register(formbody);
   await app.register(rateLimit, { global: false });
   await app.register(fstatic, { root: join(here, 'public'), prefix: '/static/' });
+  // Slide Quarto hasil impor: dokumen berskrip sendiri, jadi disajikan sandbox (lihat onSend).
+  await app.register(fstatic, { root: join(here, '..', 'slides'), prefix: '/slides/', decorateReply: false });
   await app.register(view, { engine: { ejs }, root: join(here, 'views'), layout: 'layout.ejs' });
 
   app.addHook('onSend', async (req, reply) => {
     reply.header('X-Content-Type-Options', 'nosniff');
-    reply.header('X-Frame-Options', 'DENY');
     reply.header('Referrer-Policy', 'strict-origin-when-cross-origin');
+    if (req.url.startsWith('/slides/')) {
+      // Origin buram: skrip slide tidak bisa menyentuh cookie atau halaman LMS. CORS * agar font termuat.
+      reply.header('Content-Security-Policy', 'sandbox allow-scripts allow-popups allow-downloads');
+      reply.header('Access-Control-Allow-Origin', '*');
+      reply.header('X-Frame-Options', 'SAMEORIGIN');
+      return;
+    }
+    reply.header('X-Frame-Options', 'SAMEORIGIN');
     reply.header('Content-Security-Policy',
-      "default-src 'self'; frame-src https://www.youtube-nocookie.com; img-src 'self' data: https:; style-src 'self'; object-src 'self'");
+      "default-src 'self'; frame-src 'self' https://www.youtube-nocookie.com; img-src 'self' data: https:; style-src 'self'; object-src 'self'; base-uri 'self'; form-action 'self'");
   });
 
   // Perlindungan CSRF: tolak POST lintas-origin (ditambah cookie SameSite=Lax).
@@ -107,9 +118,10 @@ export async function build({ db = openDb(), logger = false } = {}) {
     const course = getCourse(req.params.slug);
     if (!course) return page(req, reply, '404.ejs', {}, 404);
     const lessons = lessonsOf(course.id);
-    const enrolled = req.user && db.prepare('SELECT 1 FROM enrollments WHERE user_id=? AND course_id=?').get(req.user.id, course.id);
+    const enr = req.user && db.prepare('SELECT cert_code FROM enrollments WHERE user_id=? AND course_id=?').get(req.user.id, course.id);
+    const enrolled = enr;
     const done = new Set(req.user ? db.prepare('SELECT lesson_id FROM progress WHERE user_id=?').all(req.user.id).map((r) => r.lesson_id) : []);
-    return page(req, reply, 'course.ejs', { course, lessons, enrolled: !!enrolled, done, title, L });
+    return page(req, reply, 'course.ejs', { course, lessons, enrolled: !!enrolled, certCode: enr?.cert_code ?? null, done, title, L });
   });
 
   app.post('/courses/:slug/enroll', { preHandler: requireUser }, async (req, reply) => {
@@ -127,11 +139,12 @@ export async function build({ db = openDb(), logger = false } = {}) {
     const lesson = db.prepare('SELECT * FROM lessons WHERE course_id=? AND position=?').get(course.id, Number(req.params.pos));
     if (!lesson) return page(req, reply, '404.ejs', {}, 404);
     const done = !!db.prepare('SELECT 1 FROM progress WHERE user_id=? AND lesson_id=?').get(req.user.id, lesson.id);
-    const html = lesson.kind === 'text' ? renderMarkdown(L(lesson, 'body', req.lang)) : '';
+    const html = renderMarkdown(L(lesson, 'body', req.lang));
     const embed = lesson.kind === 'youtube' ? youtubeEmbed(lesson.url) : null;
     const pdf = lesson.kind === 'pdf' ? safePdfUrl(lesson.url) : null;
+    const slides = lesson.kind === 'slides' ? safeSlidesUrl(lesson.url) : null;
     const next = db.prepare('SELECT position FROM lessons WHERE course_id=? AND position>? ORDER BY position LIMIT 1').get(course.id, lesson.position);
-    return page(req, reply, 'lesson.ejs', { course, lesson, html, embed, pdf, done, next, title, L });
+    return page(req, reply, 'lesson.ejs', { course, lesson, html, embed, pdf, slides, done, next, title, L });
   });
 
   app.post('/courses/:slug/lessons/:pos/complete', { preHandler: requireUser }, async (req, reply) => {
@@ -144,11 +157,12 @@ export async function build({ db = openDb(), logger = false } = {}) {
     const left = db.prepare(
       `SELECT COUNT(*) n FROM lessons l WHERE l.course_id=? AND NOT EXISTS
        (SELECT 1 FROM progress p WHERE p.lesson_id=l.id AND p.user_id=?)`).get(course.id, req.user.id).n;
-    if (left === 0) {
-      db.prepare('UPDATE enrollments SET completed_at = COALESCE(completed_at, datetime(\'now\')) WHERE user_id=? AND course_id=?').run(req.user.id, course.id);
-    }
+    if (left === 0) issueCertificate(db, req.user.id, course.id);
     return reply.redirect(`/courses/${course.slug}`);
   });
+
+  registerCertificates(app, { page });
+  registerAdmin(app, { page });
 
   app.setNotFoundHandler((req, reply) => page(req, reply, '404.ejs', {}, 404));
   return app;
