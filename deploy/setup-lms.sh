@@ -59,7 +59,7 @@ fi
 
 # Isi kursus (draf) dari materi di repo. Aman diulang; SEED=0 untuk melewati.
 if [ "${SEED:-1}" = 1 ]; then
-  sudo -u lms bash -c "set -a; . $ENVF; set +a; cd $APP && npm run -s seed:blue-carbon >/dev/null && npm run -s seed:r" \
+  runuser -u lms -- bash -c "set -a; . $ENVF; set +a; cd $APP && npm run -s seed:blue-carbon >/dev/null && npm run -s seed:r" \
     && echo "Kursus Blue Carbon dan R terisi (draf; atur 'Tayang' di /admin)."
 fi
 
@@ -86,4 +86,4 @@ CRON
 chmod 644 /etc/cron.d/mandalariset-lms-backup
 
 echo "Selesai. Buat admin pertama:"
-echo "  sudo -u lms bash -c 'set -a; . $ENVF; set +a; cd $APP && ADMIN_PASSWORD=... node src/cli/create-admin.js email \"Nama\"'"
+echo "  runuser -u lms -- bash -c 'set -a; . $ENVF; set +a; cd $APP && ADMIN_PASSWORD=... node src/cli/create-admin.js email \"Nama\"'"
