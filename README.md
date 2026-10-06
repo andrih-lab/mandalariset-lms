@@ -31,7 +31,18 @@ npm test
 - **Video YouTube:** `/admin` → kursus → "+ Pelajaran baru" → jenis "Video YouTube", tempel tautan. Atur urutan dengan ▲▼.
 - Kursus baru berstatus draf; centang "Tayang" di admin bila siap.
 
-## Deploy (VPS)
+## Deploy langsung di VPS (disarankan)
+Sebagai root di VPS (butuh token GitHub fine-grained, izin baca Contents untuk `mandalariset-web` dan `mandalariset-lms`):
+```bash
+read -rsp "GitHub token: " T; echo
+curl -fsSL -H "Authorization: Bearer $T" -H "Accept: application/vnd.github.raw" \
+  https://api.github.com/repos/andrih-lab/mandalariset-lms/contents/deploy/vps-deploy.sh -o vps-deploy.sh
+GH_TOKEN="$T" bash vps-deploy.sh      # jangan di-pipe ke bash: skrip bertanya konfirmasi
+```
+Skrip memeriksa server dulu, meminta konfirmasi, lalu memasang situs + LMS + SSL + backup dan menguji hasilnya.
+Ulangi perintah yang sama untuk update.
+
+## Deploy dari Mac
 Dari Mac: `bash deploy/deploy-lms.sh` (rsync ke `plasa-claude`, lalu minta konfirmasi sebelum menjalankan `setup-lms.sh` sebagai root).
 Skrip hanya menyentuh: user `lms`, `/opt/mandalariset-lms`, `/var/lib/mandalariset-lms`, satu unit systemd, satu vhost nginx,
 satu cron backup, dan boolean SELinux `httpd_can_network_connect` bila perlu. SSL dilewati sampai DNS `lms` mengarah ke VPS.
