@@ -9,5 +9,5 @@
        <strong><%= (lang === 'en' && cert.title_en) || cert.title_id %></strong></p>
     <p><%= fmtDate(cert.completed_at, lang) %> · <code><%= cert.cert_code %></code></p>
   </div>
-  <p><a href="/certificate/<%= cert.cert_code %>/pdf">PDF</a></p>
+  <p><a href="/certificate/<%= cert.cert_code %>/pdf?lang=id">PDF Bahasa Indonesia</a> · <a href="/certificate/<%= cert.cert_code %>/pdf?lang=en">PDF English</a></p>
 <% } %>

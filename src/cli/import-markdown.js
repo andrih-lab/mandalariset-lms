@@ -1,6 +1,9 @@
 // Impor materi tertulis ke satu kursus dari folder berisi file Markdown per modul.
 //   node src/cli/import-markdown.js <slug-kursus> <folder> [--bagian "Materi"] [--judul "..."] [--judul-en "..."]
 //                                   [--deskripsi "..."] [--deskripsi-en "..."]  (metadata hanya dipakai saat kursus dibuat)
+//   node src/cli/import-markdown.js <slug-kursus> <folder-en> --bahasa en
+//     Mengisi terjemahan Inggris (title_en, body_en) ke pelajaran teks yang sudah ada: berkas ke-n (urut nama)
+//     dipasangkan dengan pelajaran teks ke-n menurut posisi. Jumlah berkas harus sama dengan jumlah pelajaran teks.
 // - Urutan mengikuti nama berkas (01-xxx.md, 02-xxx.md, ... atau modul-01.md).
 // - Judul pelajaran = baris "# Judul" pertama; sisanya jadi isi (Markdown, tabel ikut tampil).
 // - Idempoten per judul: menjalankan ulang memperbarui teks pelajaran bertajuk sama; yang baru ditaruh di akhir.
@@ -13,6 +16,7 @@ import { openDb } from '../db.js';
 const args = process.argv.slice(2);
 const opt = (name) => { const i = args.indexOf(name); return i >= 0 ? args.splice(i, 2)[1] : ''; };
 const section = opt('--bagian');
+const bahasa = opt('--bahasa') || 'id';
 const meta = { judul: opt('--judul'), judulEn: opt('--judul-en'), desk: opt('--deskripsi'), deskEn: opt('--deskripsi-en') };
 const [slug, dir] = args;
 if (!slug || !dir) { console.error('Pemakaian: import-markdown.js <slug> <folder> [--bagian "Nama"]'); process.exit(1); }
@@ -21,6 +25,20 @@ const files = readdirSync(dir).filter((f) => f.toLowerCase().endsWith('.md')).so
 if (!files.length) { console.error('Tidak ada berkas .md di', dir); process.exit(1); }
 
 const db = openDb();
+if (bahasa === 'en') {
+  const c = db.prepare('SELECT id FROM courses WHERE slug=?').get(slug);
+  if (!c) { console.error('Kursus belum ada:', slug); process.exit(1); }
+  const texts = db.prepare("SELECT id, title_id FROM lessons WHERE course_id=? AND kind='text' ORDER BY position").all(c.id);
+  if (texts.length !== files.length) { console.error(`Berkas (${files.length}) dan pelajaran teks (${texts.length}) tidak sama jumlahnya.`); process.exit(1); }
+  const upEn = db.prepare('UPDATE lessons SET title_en=?, body_en=? WHERE id=?');
+  db.transaction(() => files.forEach((f, i) => {
+    const md = readFileSync(join(dir, f), 'utf8');
+    const m = md.match(/^#\s+(.+)$/m);
+    upEn.run((m ? m[1] : f.replace(/\.md$/i, '')).trim(), m ? md.replace(m[0], '').trim() : md.trim(), texts[i].id);
+    console.log('EN:', texts[i].title_id, '->', m ? m[1] : f);
+  }))();
+  process.exit(0);
+}
 let course = db.prepare('SELECT id FROM courses WHERE slug=?').get(slug);
 if (!course) {
   db.prepare('INSERT INTO courses (slug,title_id,title_en,desc_id,desc_en,published) VALUES (?,?,?,?,?,0)')

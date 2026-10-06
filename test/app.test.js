@@ -111,6 +111,10 @@ test('sertifikat: terbit saat selesai, halaman verifikasi dan PDF', async () => 
   assert.equal(pdf.statusCode, 200);
   assert.equal(pdf.headers['content-type'], 'application/pdf');
   assert.equal(pdf.rawPayload.subarray(0, 4).toString(), '%PDF');
+  const en = await app.inject({ url: `/certificate/${code}/pdf?lang=en` });
+  assert.equal(en.statusCode, 200);
+  assert.equal(en.rawPayload.subarray(0, 4).toString(), '%PDF');
+  assert.notDeepEqual(en.rawPayload.length, 0);
   assert.equal((await app.inject({ url: '/certificate/MRI-TIDAKADA/pdf' })).statusCode, 404);
 });
 

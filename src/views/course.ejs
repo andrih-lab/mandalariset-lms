@@ -5,7 +5,11 @@
 <% } else if (!enrolled) { %>
   <form method="post" action="/courses/<%= course.slug %>/enroll"><button><%= t('enroll') %></button></form>
 <% } else { %>
-  <% if (certCode) { %><p class="cert-link"><a href="/certificate/<%= certCode %>/pdf">🎓 <%= lang === 'id' ? 'Unduh sertifikat' : 'Download certificate' %></a> · <a href="/certificate/<%= certCode %>"><%= lang === 'id' ? 'Halaman verifikasi' : 'Verification page' %></a></p><% } %>
+  <% if (certCode) { %><p class="cert-link">🎓
+    <%= lang === 'id' ? 'Sertifikat:' : 'Certificate:' %>
+    <a href="/certificate/<%= certCode %>/pdf?lang=id">PDF Bahasa Indonesia</a> ·
+    <a href="/certificate/<%= certCode %>/pdf?lang=en">PDF English</a> ·
+    <a href="/certificate/<%= certCode %>"><%= lang === 'id' ? 'Halaman verifikasi' : 'Verification page' %></a></p><% } %>
   <p><%= t('progress') %>: <%= lessons.filter(l => done.has(l.id)).length %>/<%= lessons.length %></p>
 <% } %>
 <ol class="lessons">
