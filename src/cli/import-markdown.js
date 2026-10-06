@@ -1,5 +1,6 @@
 // Impor materi tertulis ke satu kursus dari folder berisi file Markdown per modul.
-//   node src/cli/import-markdown.js <slug-kursus> <folder> [--bagian "Materi"]
+//   node src/cli/import-markdown.js <slug-kursus> <folder> [--bagian "Materi"] [--judul "..."] [--judul-en "..."]
+//                                   [--deskripsi "..."] [--deskripsi-en "..."]  (metadata hanya dipakai saat kursus dibuat)
 // - Urutan mengikuti nama berkas (01-xxx.md, 02-xxx.md, ... atau modul-01.md).
 // - Judul pelajaran = baris "# Judul" pertama; sisanya jadi isi (Markdown, tabel ikut tampil).
 // - Idempoten per judul: menjalankan ulang memperbarui teks pelajaran bertajuk sama; yang baru ditaruh di akhir.
@@ -10,8 +11,9 @@ import { join } from 'node:path';
 import { openDb } from '../db.js';
 
 const args = process.argv.slice(2);
-const bagianIdx = args.indexOf('--bagian');
-const section = bagianIdx >= 0 ? args.splice(bagianIdx, 2)[1] : '';
+const opt = (name) => { const i = args.indexOf(name); return i >= 0 ? args.splice(i, 2)[1] : ''; };
+const section = opt('--bagian');
+const meta = { judul: opt('--judul'), judulEn: opt('--judul-en'), desk: opt('--deskripsi'), deskEn: opt('--deskripsi-en') };
 const [slug, dir] = args;
 if (!slug || !dir) { console.error('Pemakaian: import-markdown.js <slug> <folder> [--bagian "Nama"]'); process.exit(1); }
 
@@ -21,7 +23,8 @@ if (!files.length) { console.error('Tidak ada berkas .md di', dir); process.exit
 const db = openDb();
 let course = db.prepare('SELECT id FROM courses WHERE slug=?').get(slug);
 if (!course) {
-  db.prepare("INSERT INTO courses (slug,title_id,title_en,published) VALUES (?,?,?,0)").run(slug, slug, slug);
+  db.prepare('INSERT INTO courses (slug,title_id,title_en,desc_id,desc_en,published) VALUES (?,?,?,?,?,0)')
+    .run(slug, meta.judul || slug, meta.judulEn || '', meta.desk, meta.deskEn);
   course = db.prepare('SELECT id FROM courses WHERE slug=?').get(slug);
   console.log('Kursus baru (draf):', slug, '- ubah judulnya di /admin');
 }

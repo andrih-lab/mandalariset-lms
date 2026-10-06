@@ -22,6 +22,8 @@ npm test
 - [ ] Kuis dan pembayaran (tahap 2)
 
 ## Mengisi materi
+- **Blue Carbon (sudah ada di repo, `content/blue-carbon/`, 15 berkas):** `npm run seed:blue-carbon`
+  (Panduan, Modul 1–13, Proyek akhir; idempoten per judul). Kursus dibuat berstatus draf.
 - **Slide R:** `node scripts/import-slides.mjs <folder _output Quarto> slides/r` lalu `node src/cli/seed-r-course.js`
   (catatan pembicara dibuang otomatis agar naskah narasi tidak terbaca peserta).
 - **Materi tertulis (Markdown, satu berkas per modul):** `node src/cli/import-markdown.js <slug-kursus> <folder> --bagian "Materi"`.

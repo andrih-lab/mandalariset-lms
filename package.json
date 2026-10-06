@@ -11,7 +11,9 @@
     "dev": "node --watch src/server.js",
     "migrate": "node src/db.js",
     "create-admin": "node src/cli/create-admin.js",
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "seed:blue-carbon": "node src/cli/import-markdown.js blue-carbon content/blue-carbon --bagian Materi --judul \"Blue Carbon: Pengukuran dan Perhitungan\" --judul-en \"Blue Carbon: Measurement and Accounting\" --deskripsi \"Inventarisasi karbon mangrove, lamun, dan rawa asin: dari desain plot, pengukuran tanah dan vegetasi, hingga stok total dengan ketidakpastian dan rencana monitoring.\"",
+    "seed:r": "node src/cli/seed-r-course.js"
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.0",
