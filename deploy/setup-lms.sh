@@ -57,6 +57,12 @@ if command -v getenforce >/dev/null && [ "$(getenforce)" = Enforcing ] \
   setsebool -P httpd_can_network_connect 1
 fi
 
+# Isi kursus (draf) dari materi di repo. Aman diulang; SEED=0 untuk melewati.
+if [ "${SEED:-1}" = 1 ]; then
+  sudo -u lms bash -c "set -a; . $ENVF; set +a; cd $APP && npm run -s seed:blue-carbon >/dev/null && npm run -s seed:r" \
+    && echo "Kursus Blue Carbon dan R terisi (draf; atur 'Tayang' di /admin)."
+fi
+
 VHOST=/etc/nginx/conf.d/$DOMAIN.conf
 if [ ! -f "$VHOST" ]; then
   sed "s/lms.mandalariset.com/$DOMAIN/; s/127.0.0.1:3100/127.0.0.1:$PORT/" "$APP/deploy/nginx-lms.conf" > "$VHOST"
