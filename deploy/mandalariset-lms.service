@@ -1,0 +1,17 @@
+[Unit]
+Description=LMS Mandala Riset
+After=network.target
+
+[Service]
+User=lms
+WorkingDirectory=/opt/mandalariset-lms
+EnvironmentFile=/etc/mandalariset-lms.env
+ExecStart=/usr/bin/node src/server.js
+Restart=on-failure
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/mandalariset-lms
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

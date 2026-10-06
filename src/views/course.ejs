@@ -1,0 +1,16 @@
+<h1><%= title(course, lang) %></h1>
+<p><%= L(course, 'desc', lang) %></p>
+<% if (!user) { %>
+  <p><a href="/login"><%= t('login') %></a></p>
+<% } else if (!enrolled) { %>
+  <form method="post" action="/courses/<%= course.slug %>/enroll"><button><%= t('enroll') %></button></form>
+<% } else { %>
+  <p><%= t('progress') %>: <%= lessons.filter(l => done.has(l.id)).length %>/<%= lessons.length %></p>
+<% } %>
+<ol class="lessons">
+<% lessons.forEach(l => { %>
+  <li><% if (l.section) { %><small><%= l.section %></small><br><% } %>
+  <% if (enrolled) { %><a href="/courses/<%= course.slug %>/lessons/<%= l.position %>"><%= title(l, lang) %></a><% } else { %><%= title(l, lang) %><% } %>
+  <% if (done.has(l.id)) { %> ✓<% } %></li>
+<% }) %>
+</ol>

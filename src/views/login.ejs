@@ -1,0 +1,7 @@
+<h1><%= t('login') %></h1>
+<% if (error) { %><p class="err"><%= t(error) %></p><% } %>
+<form method="post" action="/login" class="form">
+  <label><%= t('email') %><input type="email" name="email" required autocomplete="username"></label>
+  <label><%= t('password') %><input type="password" name="password" required autocomplete="current-password"></label>
+  <button><%= t('login') %></button>
+</form>
