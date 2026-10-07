@@ -1,9 +1,16 @@
 <h1><%= title(course, lang) %></h1>
 <p><%= L(course, 'desc', lang) %></p>
-<% if (!user) { %>
-  <p><a href="/login"><%= t('login') %></a></p>
-<% } else if (!enrolled) { %>
-  <form method="post" action="/courses/<%= course.slug %>/enroll"><button><%= t('enroll') %></button></form>
+<p><strong><%= t('price') %>: <%= money(course.price_idr, lang) || t('free') %></strong></p>
+<% if (!enrolled) { %>
+  <% if (course.price_idr > 0) { %>
+    <p><%= t('howToJoin') %></p>
+    <p><a class="btn" href="<%= contactUrl %>"><%= t('contactAdmin') %></a>
+    <% if (!user) { %> · <a href="/login"><%= t('login') %></a><% } %></p>
+  <% } else if (!user) { %>
+    <p><a href="/login"><%= t('login') %></a></p>
+  <% } else { %>
+    <form method="post" action="/courses/<%= course.slug %>/enroll"><button><%= t('enroll') %></button></form>
+  <% } %>
 <% } else { %>
   <% if (certCode) { %><p class="cert-link">🎓
     <%= lang === 'id' ? 'Sertifikat:' : 'Certificate:' %>

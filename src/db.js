@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS courses (
   slug TEXT NOT NULL UNIQUE,
   title_id TEXT NOT NULL, title_en TEXT NOT NULL,
   desc_id TEXT NOT NULL DEFAULT '', desc_en TEXT NOT NULL DEFAULT '',
-  published INTEGER NOT NULL DEFAULT 0
+  published INTEGER NOT NULL DEFAULT 0,
+  price_idr INTEGER NOT NULL DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS lessons (
   id INTEGER PRIMARY KEY,
@@ -59,6 +60,10 @@ export function openDb(path = config.dbPath) {
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
   db.exec(SCHEMA);
+  // Migrasi untuk basis data lama (dibuat sebelum kolom harga ada).
+  if (!db.prepare('PRAGMA table_info(courses)').all().some((c) => c.name === 'price_idr')) {
+    db.exec('ALTER TABLE courses ADD COLUMN price_idr INTEGER NOT NULL DEFAULT 0');
+  }
   return db;
 }
 

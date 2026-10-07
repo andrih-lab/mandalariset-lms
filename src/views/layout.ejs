@@ -12,10 +12,12 @@
   <a href="?lang=<%= lang === 'id' ? 'en' : 'id' %>"><%= lang === 'id' ? 'EN' : 'ID' %></a>
   <% if (user) { %>
     <% if (user.role === 'admin') { %><a href="/admin">Admin</a><% } %>
+    <a href="/account/password"><%= t('changePassword') %></a>
     <span><%= user.name %></span>
     <form method="post" action="/logout" class="inline"><button class="link"><%- t('logout') %></button></form>
   <% } else { %>
-    <a href="/login"><%= t('login') %></a> <a href="/register"><%= t('register') %></a>
+    <a href="/login"><%= t('login') %></a>
+    <% if (selfSignup) { %><a href="/register"><%= t('register') %></a><% } %>
   <% } %>
 </nav></header>
 <main><%- body %></main>

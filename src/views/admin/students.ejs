@@ -1,7 +1,15 @@
 <p><a href="/admin">← Admin</a></p>
 <h1>Peserta</h1>
-<% if (flash) { %><p><strong><%= flash %></strong></p><% } %>
-<h2>Daftarkan manual</h2>
+<% if (flash) { %><p class="flash"><strong><%= flash %></strong></p><% } %>
+<h2>Buat akun peserta</h2>
+<p><small>Setelah pembayaran dikonfirmasi. Jika email sudah ada, kata sandinya diatur ulang. Kata sandi sementara tampil sekali.</small></p>
+<form method="post" action="/admin/students/create" class="form">
+  <label>Nama<input name="name" required maxlength="100"></label>
+  <label>Email<input type="email" name="email" required></label>
+  <label>Daftarkan ke kursus<select name="course_id"><option value="">(tidak, hanya akun)</option><% courses.forEach(c => { %><option value="<%= c.id %>"><%= c.title_id %></option><% }) %></select></label>
+  <button>Buat akun</button>
+</form>
+<h2>Daftarkan manual (akun sudah ada)</h2>
 <form method="post" action="/admin/enroll" class="form">
   <label>Email peserta<input type="email" name="email" required></label>
   <label>Kursus<select name="course_id"><% courses.forEach(c => { %><option value="<%= c.id %>"><%= c.title_id %></option><% }) %></select></label>

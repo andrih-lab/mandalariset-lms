@@ -16,6 +16,7 @@ export function verifyPassword(pw, stored) {
 }
 
 const sha = (s) => createHash('sha256').update(s).digest('hex');
+export const hashToken = sha;
 
 export function createSession(db, userId) {
   const token = randomBytes(32).toString('base64url');

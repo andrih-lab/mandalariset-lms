@@ -7,4 +7,8 @@ export const config = {
   baseUrl: process.env.BASE_URL || 'http://localhost:3100',
   prod: process.env.NODE_ENV === 'production',
   sessionDays: 14,
+  // Pendaftaran akun mandiri ditutup secara bawaan: akun peserta dibuat admin setelah pembayaran dikonfirmasi.
+  selfSignup: process.env.SELF_SIGNUP === '1',
+  // Tujuan tautan "hubungi admin" (situs utama; halaman kontak ditambahkan per bahasa).
+  contactBase: process.env.CONTACT_BASE || 'https://mandalariset.com',
 };

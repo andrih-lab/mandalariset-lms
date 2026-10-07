@@ -2,5 +2,6 @@
 <% if (!courses.length) { %><p><%= t('noCourses') %></p><% } %>
 <% courses.forEach(c => { %>
   <article class="card"><h2><a href="/courses/<%= c.slug %>"><%= title(c, lang) %></a></h2>
-  <p><%= L(c, 'desc', lang) %></p></article>
+  <p><%= L(c, 'desc', lang) %></p>
+  <p><strong><%= money(c.price_idr, lang) || t('free') %></strong></p></article>
 <% }) %>

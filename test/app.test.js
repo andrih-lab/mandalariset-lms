@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { openDb } from '../src/db.js';
+import { config } from '../src/config.js';
 import { build } from '../src/server.js';
 import { youtubeEmbed, safePdfUrl, renderMarkdown } from '../src/content.js';
 
@@ -9,6 +10,7 @@ const form = (o) => new URLSearchParams(o).toString();
 const H = { 'content-type': 'application/x-www-form-urlencoded', origin: BASE };
 
 async function setup() {
+  config.selfSignup = true; // tes lama mengandalkan pendaftaran terbuka; tes tutup-daftar di bawah mengaturnya sendiri
   const db = openDb(':memory:');
   db.prepare("INSERT INTO courses (slug,title_id,title_en,published) VALUES ('c','K','C',1)").run();
   db.prepare("INSERT INTO lessons (course_id,position,title_id,title_en,body_id) VALUES (1,1,'L1','L1','# hi')").run();
@@ -124,4 +126,47 @@ test('slide disajikan dengan sandbox', async () => {
   assert.equal(r.statusCode, 200);
   assert.match(r.headers['content-security-policy'], /^sandbox allow-scripts/);
   assert.ok(!r.body.includes('<aside class="notes"'));
+});
+
+// ---- kursus berbayar: akun dibuat admin ----
+test('kursus berbayar: daftar mandiri ditutup, enroll mandiri ditolak, admin membuat akun + enroll', async () => {
+  const app = await setup();
+  config.selfSignup = false;
+  app.db.prepare("UPDATE courses SET price_idr = 250000 WHERE id = 1").run();
+  app.db.prepare("INSERT INTO users (email,name,password_hash,role) VALUES ('adm@x.id','Adm',?, 'admin')").run(hashPassword('adminpass123'));
+
+  const closed = await app.inject({ method: 'POST', url: '/register', headers: H, payload: form({ name: 'Budi', email: 'b@x.id', password: 'katasandi123' }) });
+  assert.equal(closed.statusCode, 403);
+  assert.equal(app.db.prepare('SELECT COUNT(*) n FROM users WHERE email=?').get('b@x.id').n, 0);
+
+  const page = await app.inject({ method: 'GET', url: '/courses/c' });
+  assert.ok(page.body.includes('Rp250.000'));
+
+  const cookies = await login(app, 'adm@x.id', 'adminpass123');
+  const created = await app.inject({ method: 'POST', url: '/admin/students/create', headers: H, cookies,
+    payload: form({ name: 'Budi', email: 'b@x.id', course_id: '1' }) });
+  assert.equal(created.statusCode, 200);
+  assert.equal(created.headers['cache-control'], 'no-store');
+  const pw = /Kata sandi sementara: (\S+)/.exec(created.body)?.[1];
+  assert.ok(pw && pw.length >= 12);
+  assert.equal(app.db.prepare('SELECT COUNT(*) n FROM enrollments').get().n, 1);
+
+  // peserta bisa masuk dengan kata sandi sementara, tidak bisa enroll sendiri ke kursus berbayar, dan bisa ganti sandi
+  const stu = await login(app, 'b@x.id', pw);
+  assert.ok(stu.sid);
+  assert.equal((await app.inject({ method: 'GET', url: '/admin', cookies: stu })).statusCode, 403);
+  const ch = await app.inject({ method: 'POST', url: '/account/password', headers: H, cookies: stu, payload: form({ current: pw, next: 'sandibaru12345' }) });
+  assert.equal(ch.statusCode, 200);
+  assert.ok((await login(app, 'b@x.id', 'sandibaru12345')).sid);
+  assert.equal((await app.inject({ method: 'POST', url: '/login', headers: H, payload: form({ email: 'b@x.id', password: pw }) })).statusCode, 401);
+
+  // kursus kedua berbayar yang belum didaftarkan: enroll sendiri tidak membuat pendaftaran
+  app.db.prepare("INSERT INTO courses (slug,title_id,title_en,published,price_idr) VALUES ('d','D','D',1,100000)").run();
+  await app.inject({ method: 'POST', url: '/courses/d/enroll', headers: H, cookies: stu });
+  assert.equal(app.db.prepare('SELECT COUNT(*) n FROM enrollments WHERE course_id=2').get().n, 0);
+
+  // akun admin tidak bisa diatur ulang lewat form ini
+  const adm = await app.inject({ method: 'POST', url: '/admin/students/create', headers: H, cookies, payload: form({ name: 'Adm', email: 'adm@x.id' }) });
+  assert.equal(adm.statusCode, 400);
+  config.selfSignup = true;
 });

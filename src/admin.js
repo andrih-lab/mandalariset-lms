@@ -1,5 +1,9 @@
 import { config } from './config.js';
+import { randomBytes } from 'node:crypto';
 import { validateLessonUrl } from './content.js';
+import { hashPassword } from './auth.js';
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const SLUG_RE = /^[a-z0-9][a-z0-9-]{1,59}$/;
 const KINDS = ['text', 'youtube', 'pdf', 'slides'];
@@ -31,6 +35,7 @@ export function registerAdmin(app, { page }) {
     const courseFields = (b) => ({
       slug: str(b.slug, 60), title_id: str(b.title_id, 200), title_en: str(b.title_en, 200),
       desc_id: str(b.desc_id, 2000), desc_en: str(b.desc_en, 2000), published: b.published ? 1 : 0,
+      price_idr: Math.min(Math.max(Math.trunc(Number(String(b.price_idr ?? '').replace(/\D/g, ''))) || 0, 0), 100000000),
     });
     const courseError = (c) => (!SLUG_RE.test(c.slug) ? 'Slug: huruf kecil, angka, tanda minus (2–60 karakter).'
       : !c.title_id ? 'Judul (ID) wajib diisi.' : null);
@@ -44,7 +49,7 @@ export function registerAdmin(app, { page }) {
       if (!error) {
         try {
           const r = db.prepare(
-            `INSERT INTO courses (slug,title_id,title_en,desc_id,desc_en,published) VALUES (@slug,@title_id,@title_en,@desc_id,@desc_en,@published)`).run(c);
+            `INSERT INTO courses (slug,title_id,title_en,desc_id,desc_en,published,price_idr) VALUES (@slug,@title_id,@title_en,@desc_id,@desc_en,@published,@price_idr)`).run(c);
           return reply.redirect(`/admin/courses/${r.lastInsertRowid}`);
         } catch { return view(req, reply, 'admin/course.ejs', { course: null, lessons: [], form: c, error: 'Slug sudah dipakai.' }, 400); }
       }
@@ -68,7 +73,7 @@ export function registerAdmin(app, { page }) {
       const error = courseError(c);
       if (error) return view(req, reply, 'admin/course.ejs', { course, lessons: lessonsOf(course.id), form: c, error }, 400);
       try {
-        db.prepare(`UPDATE courses SET slug=@slug,title_id=@title_id,title_en=@title_en,desc_id=@desc_id,desc_en=@desc_en,published=@published WHERE id=@id`)
+        db.prepare(`UPDATE courses SET slug=@slug,title_id=@title_id,title_en=@title_en,desc_id=@desc_id,desc_en=@desc_en,published=@published,price_idr=@price_idr WHERE id=@id`)
           .run({ ...c, id: course.id });
       } catch {
         return view(req, reply, 'admin/course.ejs', { course, lessons: lessonsOf(course.id), form: c, error: 'Slug sudah dipakai.' }, 400);
@@ -159,7 +164,7 @@ export function registerAdmin(app, { page }) {
     });
 
     // ---- peserta ----
-    admin.get('/admin/students', async (req, reply) => {
+    const studentsData = () => {
       const users = db.prepare(
         `SELECT u.id, u.name, u.email, u.role, u.created_at FROM users u ORDER BY u.id DESC`).all();
       const enr = db.prepare(
@@ -170,7 +175,39 @@ export function registerAdmin(app, { page }) {
       const byUser = new Map();
       for (const e of enr) (byUser.get(e.user_id) ?? byUser.set(e.user_id, []).get(e.user_id)).push(e);
       const courses = db.prepare('SELECT id, title_id FROM courses ORDER BY id').all();
-      return view(req, reply, 'admin/students.ejs', { users, byUser, courses, flash: req.query.ok ? 'Peserta didaftarkan.' : (req.query.err ? 'Email atau kursus tidak ditemukan.' : null) });
+      return { users, byUser, courses };
+    };
+
+    admin.get('/admin/students', async (req, reply) => {
+      return view(req, reply, 'admin/students.ejs', { ...studentsData(), flash: req.query.ok ? 'Peserta didaftarkan.' : (req.query.err ? 'Email atau kursus tidak ditemukan.' : null) });
+    });
+
+    // Buat akun peserta (atau atur ulang kata sandinya) setelah pembayaran dikonfirmasi, opsional langsung daftarkan ke kursus.
+    // Kata sandi sementara dibuat acak dan hanya tampil sekali di respons ini (bukan lewat URL), agar admin menyampaikannya ke peserta.
+    admin.post('/admin/students/create', async (req, reply) => {
+      const { name = '', email = '', course_id = '' } = req.body || {};
+      const nm = str(name, 100), em = str(email, 200);
+      const fail = (msg) => view(req, reply, 'admin/students.ejs', { ...studentsData(), flash: msg }, 400);
+      if (nm.length < 2 || !EMAIL_RE.test(em)) return fail('Nama (min. 2 huruf) dan email yang valid wajib diisi.');
+      const course = course_id ? getCourse(course_id) : null;
+      if (course_id && !course) return fail('Kursus tidak ditemukan.');
+      const existing = db.prepare('SELECT id, role FROM users WHERE email=?').get(em);
+      if (existing?.role === 'admin') return fail('Akun admin tidak bisa diatur lewat form ini.');
+      const pw = randomBytes(12).toString('base64url');
+      let uid;
+      db.transaction(() => {
+        if (existing) {
+          db.prepare('UPDATE users SET password_hash=?, name=? WHERE id=?').run(hashPassword(pw), nm, existing.id);
+          db.prepare('DELETE FROM sessions WHERE user_id=?').run(existing.id);
+          uid = existing.id;
+        } else {
+          uid = db.prepare('INSERT INTO users (email, name, password_hash) VALUES (?,?,?)').run(em, nm, hashPassword(pw)).lastInsertRowid;
+        }
+        if (course) db.prepare('INSERT OR IGNORE INTO enrollments (user_id, course_id) VALUES (?,?)').run(uid, course.id);
+      })();
+      reply.header('Cache-Control', 'no-store');
+      return view(req, reply, 'admin/students.ejs', { ...studentsData(),
+        flash: `${existing ? 'Kata sandi diatur ulang' : 'Akun dibuat'}${course ? ' dan didaftarkan ke ' + course.title_id : ''}. Email: ${em} | Kata sandi sementara: ${pw} | Tampil sekali ini saja; sampaikan ke peserta (peserta bisa menggantinya di menu "Ganti kata sandi").` });
     });
 
     // Pendaftaran manual (mis. peserta yang sudah bayar di luar sistem).

@@ -17,6 +17,17 @@ const D = {
   badLogin: { id: 'Email atau kata sandi salah.', en: 'Wrong email or password.' },
   badInput: { id: 'Data tidak valid atau email sudah terdaftar.', en: 'Invalid data or email already registered.' },
   notFound: { id: 'Halaman tidak ditemukan.', en: 'Page not found.' },
+  price: { id: 'Biaya', en: 'Fee' },
+  free: { id: 'Gratis', en: 'Free' },
+  howToJoin: { id: 'Cara mengikuti: hubungi admin untuk pembayaran. Setelah pembayaran dikonfirmasi, admin membuatkan akun peserta dan mengirimkan data masuknya kepada Anda.', en: 'How to join: contact the admin to arrange payment. Once payment is confirmed, the admin creates your participant account and sends you the login details.' },
+  contactAdmin: { id: 'Hubungi admin', en: 'Contact admin' },
+  signupClosed: { id: 'Pendaftaran mandiri ditutup. Akun peserta dibuat oleh admin setelah pembayaran dikonfirmasi.', en: 'Self-registration is closed. Participant accounts are created by the admin once payment is confirmed.' },
+  changePassword: { id: 'Ganti kata sandi', en: 'Change password' },
+  currentPassword: { id: 'Kata sandi saat ini', en: 'Current password' },
+  newPassword: { id: 'Kata sandi baru (min. 10 karakter)', en: 'New password (min. 10 characters)' },
+  save: { id: 'Simpan', en: 'Save' },
+  passwordChanged: { id: 'Kata sandi diganti.', en: 'Password changed.' },
+  badPassword: { id: 'Kata sandi saat ini salah atau kata sandi baru kurang dari 10 karakter.', en: 'Current password is wrong or the new password is shorter than 10 characters.' },
   mustEnroll: { id: 'Ikuti kursus ini untuk membuka pelajaran.', en: 'Enroll to open the lessons.' },
 };
 
