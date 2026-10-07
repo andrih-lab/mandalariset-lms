@@ -7,6 +7,7 @@
   <label>Judul (EN, opsional: kosong = pakai ID)<input name="title_en" value="<%= form.title_en || '' %>"></label>
   <label>Deskripsi (ID)<textarea name="desc_id" rows="3"><%= form.desc_id || '' %></textarea></label>
   <label>Deskripsi (EN)<textarea name="desc_en" rows="3"><%= form.desc_en || '' %></textarea></label>
+  <label>Harga (Rp, angka saja; 0 = gratis dan peserta boleh daftar sendiri)<input name="price_idr" inputmode="numeric" value="<%= form.price_idr || 0 %>"></label>
   <label class="row"><input type="checkbox" name="published" value="1" <%= form.published ? 'checked' : '' %>> Tayang (terlihat publik)</label>
   <button>Simpan</button>
 </form>

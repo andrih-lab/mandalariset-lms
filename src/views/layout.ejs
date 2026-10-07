@@ -23,11 +23,12 @@
       <a href="?lang=<%= lang === 'id' ? 'en' : 'id' %>" class="pill"><%= lang === 'id' ? 'English' : 'Bahasa Indonesia' %></a>
       <% if (user) { %>
         <% if (user.role === 'admin') { %><a href="/admin">Admin</a><% } %>
+        <a href="/account/password"><%= t('changePassword') %></a>
         <span class="who"><%= user.name %></span>
         <form method="post" action="/logout" class="inline"><button class="link"><%- t('logout') %></button></form>
       <% } else { %>
         <a href="/login"><%= t('login') %></a>
-        <a href="/register" class="btn btn-sm"><%= t('register') %></a>
+        <% if (selfSignup) { %><a href="/register" class="btn btn-sm"><%= t('register') %></a><% } else { %><a href="<%= contactUrl %>" class="btn btn-sm"><%= t('contactAdmin') %></a><% } %>
       <% } %>
     </nav>
   </div>

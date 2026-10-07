@@ -1,4 +1,8 @@
 <h1><%= t('register') %></h1>
+<% if (!selfSignup) { %>
+  <p><%= t('signupClosed') %></p>
+  <p><a href="<%= contactUrl %>"><%= t('contactAdmin') %></a> · <a href="/login"><%= t('login') %></a></p>
+<% } else { %>
 <% if (error) { %><p class="err"><%= t(error) %></p><% } %>
 <form method="post" action="/register" class="form">
   <label><%= t('name') %><input name="name" required maxlength="100" autocomplete="name"></label>
@@ -6,3 +10,4 @@
   <label><%= t('password') %><input type="password" name="password" required minlength="10" autocomplete="new-password"></label>
   <button><%= t('register') %></button>
 </form>
+<% } %>

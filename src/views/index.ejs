@@ -15,7 +15,7 @@
     <p class="lead"><%= t('heroLead') %></p>
     <p class="cta">
       <a class="btn btn-light" href="#kursus"><%= t('ctaCourses') %></a>
-      <% if (!user) { %><a class="btn btn-ghost-light" href="/register"><%= t('ctaSignup') %></a><% } %>
+      <% if (!user) { %><a class="btn btn-ghost-light" href="<%= selfSignup ? '/register' : contactUrl %>"><%= selfSignup ? t('ctaSignup') : t('contactAdmin') %></a><% } %>
     </p>
     <ul class="hero-facts">
       <li><strong><%= courses.length %></strong> <%= t('coursesTitle').toLowerCase() %></li>
@@ -62,6 +62,7 @@
             <% if (mine.has(c.id)) { %><span class="tag"><%= t('enrolledTag') %></span><% } %>
             <h3><%= title(c, lang) %></h3>
             <p><%= L(c, 'desc', lang) %></p>
+            <span class="price"><%= money(c.price_idr, lang) || t('free') %></span>
             <span class="meta"><%= c.n %> <%= t('lessonsWord') %> · <strong><%= mine.has(c.id) ? t('ctaContinue') : t('openCourse') %> →</strong></span>
           </span>
         </a>

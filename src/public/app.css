@@ -61,3 +61,4 @@ label.row{display:flex;gap:8px;align-items:center}label.row input{width:auto}
 button.danger{background:#b91c1c}form.inline button.link{color:var(--teal);margin-left:6px}
 .cert-link{display:inline-block;margin:8px 0}
 .slides{position:relative;padding-top:56.25%;background:#000}.slides iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.course .price{font:600 1.05rem Fraunces,serif;color:var(--teal-dark);margin-top:4px}

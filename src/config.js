@@ -9,4 +9,8 @@ export const config = {
   sessionDays: 14,
   contactEmail: process.env.CONTACT_EMAIL || 'mandalarisetindonesia@gmail.com',
   siteUrl: process.env.SITE_URL || 'https://mandalariset.com',
+  // Pendaftaran akun mandiri ditutup secara bawaan: akun peserta dibuat admin setelah pembayaran dikonfirmasi.
+  selfSignup: process.env.SELF_SIGNUP === '1',
+  // Tujuan tautan "hubungi admin" (situs utama; halaman kontak ditambahkan per bahasa).
+  contactBase: process.env.CONTACT_BASE || 'https://mandalariset.com',
 };

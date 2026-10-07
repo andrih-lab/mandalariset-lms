@@ -10,7 +10,7 @@ import { dirname, join } from 'node:path';
 import { config } from './config.js';
 import { openDb } from './db.js';
 import { pickLang, makeT } from './i18n.js';
-import { hashPassword, verifyPassword, createSession, userFromToken, destroySession, cookieOpts } from './auth.js';
+import { hashPassword, hashToken, verifyPassword, createSession, userFromToken, destroySession, cookieOpts } from './auth.js';
 import { renderMarkdown, youtubeEmbed, safePdfUrl, safeSlidesUrl } from './content.js';
 import { issueCertificate, registerCertificates } from './certificate.js';
 import { registerAdmin } from './admin.js';
@@ -62,12 +62,19 @@ export async function build({ db = openDb(), logger = false } = {}) {
   });
 
   const page = (req, reply, tpl, data = {}, code = 200) =>
-    reply.code(code).view(tpl, { t: makeT(req.lang), lang: req.lang, user: req.user, error: null, wide: false, siteUrl: config.siteUrl, contactEmail: config.contactEmail, ...data });
+    reply.code(code).view(tpl, {
+      t: makeT(req.lang), lang: req.lang, user: req.user, error: null, wide: false,
+      siteUrl: config.siteUrl, contactEmail: config.contactEmail,
+      selfSignup: config.selfSignup, contactUrl: `${config.contactBase}/${req.lang}/${req.lang === 'id' ? 'kontak' : 'contact'}/`, money, ...data,
+    });
 
   const requireUser = async (req, reply) => {
     if (!req.user) return reply.redirect('/login');
   };
 
+  const money = (n, lang) => (n > 0
+    ? (lang === 'id' ? `Rp${new Intl.NumberFormat('id-ID').format(n)}` : `IDR ${new Intl.NumberFormat('en-US').format(n)}`)
+    : null);
   const title = (row, lang) => row[`title_${lang}`] || row.title_id;
   const L = (row, f, lang) => row[`${f}_${lang}`] || row[`${f}_id`];
 
@@ -83,6 +90,7 @@ export async function build({ db = openDb(), logger = false } = {}) {
   // ---- auth ----
   app.get('/register', async (req, reply) => page(req, reply, 'register.ejs'));
   app.post('/register', { config: { rateLimit: { max: 10, timeWindow: '1 hour' } } }, async (req, reply) => {
+    if (!config.selfSignup) return page(req, reply, 'register.ejs', {}, 403);
     const { name = '', email = '', password = '' } = req.body || {};
     const ok = name.trim().length >= 2 && name.length <= 100 && EMAIL_RE.test(email) && email.length <= 200 &&
       password.length >= 10 && password.length <= 200;
@@ -108,6 +116,19 @@ export async function build({ db = openDb(), logger = false } = {}) {
     return reply.redirect('/');
   });
 
+  app.get('/account/password', { preHandler: requireUser }, async (req, reply) => page(req, reply, 'password.ejs', { ok: false }));
+  app.post('/account/password', { preHandler: requireUser, config: { rateLimit: { max: 10, timeWindow: '15 minutes' } } }, async (req, reply) => {
+    const { current = '', next = '' } = req.body || {};
+    const u = db.prepare('SELECT password_hash FROM users WHERE id = ?').get(req.user.id);
+    if (!verifyPassword(String(current), u.password_hash) || String(next).length < 10 || String(next).length > 200) {
+      return page(req, reply, 'password.ejs', { ok: false, error: 'badPassword' }, 400);
+    }
+    db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(hashPassword(String(next)), req.user.id);
+    // Akhiri sesi lain di perangkat lain; sesi ini tetap berlaku.
+    db.prepare('DELETE FROM sessions WHERE user_id = ? AND token_hash != ?').run(req.user.id, hashToken(req.cookies.sid));
+    return page(req, reply, 'password.ejs', { ok: true });
+  });
+
   app.post('/logout', async (req, reply) => {
     destroySession(db, req.cookies?.sid);
     reply.clearCookie('sid', { path: '/' });
@@ -131,6 +152,8 @@ export async function build({ db = openDb(), logger = false } = {}) {
   app.post('/courses/:slug/enroll', { preHandler: requireUser }, async (req, reply) => {
     const course = getCourse(req.params.slug);
     if (!course) return page(req, reply, '404.ejs', {}, 404);
+    // Kursus berbayar hanya bisa didaftarkan admin setelah pembayaran dikonfirmasi.
+    if (course.price_idr > 0) return reply.redirect(`/courses/${course.slug}`);
     db.prepare('INSERT OR IGNORE INTO enrollments (user_id, course_id) VALUES (?,?)').run(req.user.id, course.id);
     return reply.redirect(`/courses/${course.slug}`);
   });
