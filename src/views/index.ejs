@@ -1,6 +1,86 @@
-<h1><%= t('courses') %></h1>
-<% if (!courses.length) { %><p><%= t('noCourses') %></p><% } %>
-<% courses.forEach(c => { %>
-  <article class="card"><h2><a href="/courses/<%= c.slug %>"><%= title(c, lang) %></a></h2>
-  <p><%= L(c, 'desc', lang) %></p></article>
-<% }) %>
+<section class="hero">
+  <svg class="hero-art" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <g fill="none" stroke="#ffffff" stroke-opacity=".16" stroke-width="3" stroke-linecap="round">
+      <path d="M930 520V210M930 300c-70-10-120-50-150-110M930 340c70-10 120-50 150-110M930 400c-55-8-95-35-120-80M930 400c55-8 95-35 120-80"/>
+      <path d="M930 430c-40 20-70 50-90 90M930 430c35 25 60 55 75 90M930 430c-90 10-150 40-190 90M930 430c80 15 140 45 180 90"/>
+      <path d="M1110 520V330M1110 380c-35-5-60-25-75-55M1110 410c35-5 60-25 75-55"/>
+      <path d="M770 520V360M770 400c-30-5-50-22-62-48M770 430c30-5 50-22 62-48"/>
+    </g>
+    <path d="M0 470c150-35 300-35 450 0s300 35 450 0 200-25 300-5V520H0Z" fill="#ffffff" fill-opacity=".07"/>
+    <path d="M0 495c180-30 330-30 500 0s330 30 500-5 150-15 200-5V520H0Z" fill="#ffffff" fill-opacity=".09"/>
+  </svg>
+  <div class="hero-in">
+    <p class="eyebrow"><%= t('heroEyebrow') %></p>
+    <h1><%= t('heroTitle') %></h1>
+    <p class="lead"><%= t('heroLead') %></p>
+    <p class="cta">
+      <a class="btn btn-light" href="#kursus"><%= t('ctaCourses') %></a>
+      <% if (!user) { %><a class="btn btn-ghost-light" href="/register"><%= t('ctaSignup') %></a><% } %>
+    </p>
+    <ul class="hero-facts">
+      <li><strong><%= courses.length %></strong> <%= t('coursesTitle').toLowerCase() %></li>
+      <li><strong><%= courses.reduce((a, c) => a + c.n, 0) %></strong> <%= t('lessonsWord') %></li>
+      <li><strong>ID · EN</strong></li>
+    </ul>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="in">
+    <h2 class="sec-title"><%= t('howTitle') %></h2>
+    <ol class="steps">
+      <% [1,2,3,4].forEach(i => { %>
+        <li><span class="num"><%= i %></span><h3><%= t('step' + i + 't') %></h3><p><%= t('step' + i + 'd') %></p></li>
+      <% }) %>
+    </ol>
+  </div>
+</section>
+
+<section class="sec alt">
+  <div class="in">
+    <h2 class="sec-title"><%= t('featTitle') %></h2>
+    <div class="feats">
+      <% [1,2,3,4,5].forEach(i => { %>
+        <div class="feat"><h3><%= t('feat' + i + 't') %></h3><p><%= t('feat' + i + 'd') %></p></div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="kursus">
+  <div class="in">
+    <h2 class="sec-title"><%= t('coursesTitle') %></h2>
+    <p class="sec-lead"><%= t('coursesLead') %></p>
+    <% if (!courses.length) { %><p><%= t('noCourses') %></p><% } %>
+    <div class="courses">
+      <% courses.forEach((c, i) => { %>
+        <a class="course c<%= i % 3 %>" href="/courses/<%= c.slug %>">
+          <span class="cover" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="44" height="44"><path d="M32 8v48M32 24c-9 0-14-5-16-12M32 32c9 0 14-5 16-12M32 42c-7 0-11-4-13-10M32 42c7 0 11-4 13-10" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/></svg>
+          </span>
+          <span class="body">
+            <% if (mine.has(c.id)) { %><span class="tag"><%= t('enrolledTag') %></span><% } %>
+            <h3><%= title(c, lang) %></h3>
+            <p><%= L(c, 'desc', lang) %></p>
+            <span class="meta"><%= c.n %> <%= t('lessonsWord') %> · <strong><%= mine.has(c.id) ? t('ctaContinue') : t('openCourse') %> →</strong></span>
+          </span>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="sec alt">
+  <div class="in two">
+    <div>
+      <h2 class="sec-title"><%= t('aboutTitle') %></h2>
+      <p><%= t('aboutText') %></p>
+      <p><a class="more" href="<%= siteUrl %>"><%= t('aboutSite') %> →</a></p>
+    </div>
+    <div class="ask">
+      <h3><%= t('askTitle') %></h3>
+      <p><%= t('askText') %></p>
+      <a class="btn" href="mailto:<%= contactEmail %>"><%= contactEmail %></a>
+    </div>
+  </div>
+</section>

@@ -125,3 +125,13 @@ test('slide disajikan dengan sandbox', async () => {
   assert.match(r.headers['content-security-policy'], /^sandbox allow-scripts/);
   assert.ok(!r.body.includes('<aside class="notes"'));
 });
+
+test('halaman depan: pengantar tampil sebelum daftar kursus, dua bahasa', async () => {
+  const app = await setup();
+  const id = (await app.inject({ url: '/' })).body;
+  assert.ok(id.indexOf('Belajar riset ekologi') > -1 && id.indexOf('Cara belajarnya') > -1);
+  assert.ok(id.indexOf('Belajar riset ekologi') < id.indexOf('id="kursus"'), 'pengantar sebelum kursus');
+  assert.ok(id.includes('/courses/c'));
+  const en = (await app.inject({ url: '/?lang=en' })).body;
+  assert.ok(en.includes('Learn ecological and blue carbon research') && en.includes('How it works'));
+});

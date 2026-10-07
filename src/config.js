@@ -7,4 +7,6 @@ export const config = {
   baseUrl: process.env.BASE_URL || 'http://localhost:3100',
   prod: process.env.NODE_ENV === 'production',
   sessionDays: 14,
+  contactEmail: process.env.CONTACT_EMAIL || 'mandalarisetindonesia@gmail.com',
+  siteUrl: process.env.SITE_URL || 'https://mandalariset.com',
 };

@@ -42,7 +42,7 @@ export async function build({ db = openDb(), logger = false } = {}) {
     }
     reply.header('X-Frame-Options', 'SAMEORIGIN');
     reply.header('Content-Security-Policy',
-      "default-src 'self'; frame-src 'self' https://www.youtube-nocookie.com; img-src 'self' data: https:; style-src 'self'; object-src 'self'; base-uri 'self'; form-action 'self'");
+      "default-src 'self'; frame-src 'self' https://www.youtube-nocookie.com; img-src 'self' data: https:; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; object-src 'self'; base-uri 'self'; form-action 'self'");
   });
 
   // Perlindungan CSRF: tolak POST lintas-origin (ditambah cookie SameSite=Lax).
@@ -62,7 +62,7 @@ export async function build({ db = openDb(), logger = false } = {}) {
   });
 
   const page = (req, reply, tpl, data = {}, code = 200) =>
-    reply.code(code).view(tpl, { t: makeT(req.lang), lang: req.lang, user: req.user, error: null, ...data });
+    reply.code(code).view(tpl, { t: makeT(req.lang), lang: req.lang, user: req.user, error: null, wide: false, siteUrl: config.siteUrl, contactEmail: config.contactEmail, ...data });
 
   const requireUser = async (req, reply) => {
     if (!req.user) return reply.redirect('/login');
@@ -72,8 +72,12 @@ export async function build({ db = openDb(), logger = false } = {}) {
   const L = (row, f, lang) => row[`${f}_${lang}`] || row[`${f}_id`];
 
   app.get('/', async (req, reply) => {
-    const courses = db.prepare('SELECT * FROM courses WHERE published = 1 ORDER BY id').all();
-    return page(req, reply, 'index.ejs', { courses, title, L });
+    const courses = db.prepare(
+      `SELECT c.*, (SELECT COUNT(*) FROM lessons l WHERE l.course_id = c.id) AS n
+       FROM courses c WHERE c.published = 1 ORDER BY c.id`).all();
+    const mine = new Set(req.user
+      ? db.prepare('SELECT course_id FROM enrollments WHERE user_id=?').all(req.user.id).map((r) => r.course_id) : []);
+    return page(req, reply, 'index.ejs', { courses, mine, title, L, wide: true, email: config.contactEmail });
   });
 
   // ---- auth ----
