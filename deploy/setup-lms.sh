@@ -59,7 +59,7 @@ fi
 
 # Isi kursus (draf) dari materi di repo. Aman diulang; SEED=0 untuk melewati.
 if [ "${SEED:-1}" = 1 ]; then
-  runuser -u lms -- bash -c "set -a; . $ENVF; set +a; cd $APP && npm run -s seed:blue-carbon >/dev/null && npm run -s seed:r" \
+  runuser -u lms -- bash -c "set -a; . $ENVF; set +a; cd $APP && npm run -s seed:blue-carbon >/dev/null && npm run -s seed:blue-carbon-en >/dev/null && npm run -s seed:r" \
     && echo "Kursus Blue Carbon dan R terisi (draf; atur 'Tayang' di /admin)."
 fi
 
